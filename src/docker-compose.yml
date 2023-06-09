@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+  app:
+    container_name: "django_teach"
+    hostname: django_teach
+    depends_on: [db]
+    build:
+      context: django_teach
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    command: bash -c "cd django_teach && python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    env_file:
+      - .env
+
+  db:
+    hostname: pghost
+    image: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - .env
+
+volumes:
+  postgres_data:
