@@ -1,4 +1,4 @@
 django
 python-dotenv
 psycopg2-binary
-rest_framework
+django-countries
