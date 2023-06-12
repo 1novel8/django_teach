@@ -2,3 +2,5 @@ django
 python-dotenv
 psycopg2-binary
 django-countries
+djangorestframework
+djangorestframework-simplejwt
