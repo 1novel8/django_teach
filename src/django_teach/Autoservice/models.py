@@ -44,8 +44,21 @@ class AutoserviceModel(BaseModel):
     country = CountryField()
     regular_customers = models.ManyToManyField(
         UserModel,
-        through='AutoserviceRegularCustomers',
-        related_query_name='autoservices'
+        through='AutoserviceRegularCustomersModel',
+        related_query_name='autoservice_purchases_count',
+        related_name='autoservice_purchases',
+    )
+    car_catalog = models.ManyToManyField(
+        CarModel,
+        through='AutoserviceCarCatalogModel',
+        related_query_name='autoservice',  # whtf?
+        related_name='autoservice',
+    )
+    sale_history = models.ManyToManyField(
+        UserModel,
+        through='AutoserviceSaleHistoryModel',
+        related_query_name='buy_history',
+        related_name='buy_history',
     )
 
     class Meta:
@@ -76,7 +89,23 @@ class PreferredCarParametersModel(BaseModel):
                f' fuel:{self.fuel_type}'
 
 
-class AutoserviceRegularCustomers(BaseModel):
+class AutoserviceCarCatalogModel(BaseModel):
+    autoservice = models.ForeignKey(AutoserviceModel, on_delete=models.CASCADE)
+    car = models.ForeignKey(CarModel, on_delete=models.CASCADE)
+    price = models.IntegerField()
+    count = models.IntegerField(default=0)
+
+    class Meta:
+        db_table = 'autoservice_car_catalog'
+
+    def __str__(self):
+        return f'autoservice_id:{self.autoservice},' \
+               f' car_id:{self.car},' \
+               f' price:{self.price},' \
+               f' count:{self.count}'
+
+
+class AutoserviceRegularCustomersModel(BaseModel):
     autoservice = models.ForeignKey(AutoserviceModel, on_delete=models.CASCADE)
     user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
     number_of_purchases = models.IntegerField(default=0)
@@ -88,3 +117,19 @@ class AutoserviceRegularCustomers(BaseModel):
         return f'autoservice_id:{self.autoservice},' \
                f' user_id:{self.user},' \
                f' num_of_purchases:{self.number_of_purchases}'
+
+
+class AutoserviceSaleHistoryModel(models.Model):
+    autoservice = models.ForeignKey(AutoserviceModel, on_delete=models.CASCADE)
+    user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    car = models.ForeignKey(CarModel, on_delete=models.CASCADE)
+    date_of_sale = models.DateTimeField(auto_now_add=True)
+    price = models.IntegerField()
+
+    class Meta:
+        db_table = 'autoservice_sale_history'
+
+    def __str__(self):
+        return f'autoservice_id:{self.autoservice},' \
+               f' user_id:{self.user},' \
+               f' car_id:{self.car}'

@@ -15,22 +15,30 @@ class CarModelAdmin(admin.ModelAdmin):
 
 
 class AutoserviceRegularCustomersInline(admin.StackedInline):
-    model = models.AutoserviceRegularCustomers
+    model = models.AutoserviceRegularCustomersModel
 
 
-@admin.register(models.AutoserviceRegularCustomers)
+class PreferredParametersModelInline(admin.StackedInline):
+    model = models.PreferredCarParametersModel
+
+
+class AutoserviceCarCatalogModelInline(admin.StackedInline):
+    model = models.AutoserviceCarCatalogModel
+
+
+class AutoserviceSaleHistoryInline(admin.StackedInline):
+    model = models.AutoserviceSaleHistoryModel
+
+
+@admin.register(models.AutoserviceRegularCustomersModel)
 class AutoserviceRegularCustomersAdmin(admin.ModelAdmin):
-    all_fields = [field.name for field in models.AutoserviceRegularCustomers._meta.fields]
+    all_fields = [field.name for field in models.AutoserviceRegularCustomersModel._meta.fields]
     list_display = all_fields
     list_filter = all_fields
     search_fields = all_fields
     fields = all_fields
     readonly_fields = ('id', 'is_active', 'created_at', 'updated_at')
     ordering = all_fields
-
-
-class PreferredParametersModelInline(admin.StackedInline):
-    model = models.PreferredCarParametersModel
 
 
 @admin.register(models.AutoserviceModel)
@@ -43,7 +51,12 @@ class AutoserviceModelAdmin(admin.ModelAdmin):
     readonly_fields = ('id', 'is_active', 'created_at', 'updated_at')
     ordering = all_fields
 
-    inlines = [PreferredParametersModelInline, AutoserviceRegularCustomersInline]
+    inlines = [
+        PreferredParametersModelInline,
+        AutoserviceRegularCustomersInline,
+        AutoserviceCarCatalogModelInline,
+        AutoserviceSaleHistoryInline,
+    ]
 
 
 @admin.register(models.PreferredCarParametersModel)
@@ -53,9 +66,27 @@ class PreferredCarParametersModelAdmin(admin.ModelAdmin):
     list_filter = all_fields
     search_fields = all_fields
     fields = all_fields
-    readonly_fields = ('id',)
+    readonly_fields = ('id', 'created_at', 'updated_at')
     ordering = all_fields
 
 
+@admin.register(models.AutoserviceCarCatalogModel)
+class AutoserviceCarCatalogAdmin(admin.ModelAdmin):
+    all_fields = [field.name for field in models.AutoserviceCarCatalogModel._meta.fields]
+    list_display = all_fields
+    list_filter = all_fields
+    search_fields = all_fields
+    fields = all_fields
+    readonly_fields = ('id', 'created_at', 'updated_at')
+    ordering = all_fields
 
 
+@admin.register(models.AutoserviceSaleHistoryModel)
+class AutoserviceSaleHistoryAdmin(admin.ModelAdmin):
+    all_fields = [field.name for field in models.AutoserviceSaleHistoryModel._meta.fields]
+    list_display = all_fields
+    list_filter = all_fields
+    search_fields = all_fields
+    fields = all_fields
+    readonly_fields = ('id', 'date_of_sale')
+    ordering = all_fields
